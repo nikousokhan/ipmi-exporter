@@ -1,2 +1,1 @@
 # ipmi-exporter
-IPMI Exporter 

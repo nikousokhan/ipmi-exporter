@@ -1,0 +1,6 @@
+[Unit]
+Description=Prometheus IPMI exporter
+[Service]
+ExecStart=/opt/go/bin/ipmi_exporter -config.file /opt/go/bin/ipmi.yml -web.listen-address ":9290"
+[Install]
+WantedBy=basic.target
