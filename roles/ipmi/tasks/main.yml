@@ -1,0 +1,45 @@
+---
+- name: Install Rsync
+  yum:
+    name:
+      - rsync
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat'   
+
+
+- name: Install Rsync
+  apt:
+    name:
+      - rsync
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'   
+
+- name: Synchronization of src /go to dest /opt  on the remote hosts
+  synchronize:
+    src: files/go
+    dest: /opt/
+
+- name: Copy file ipmi-exporter.service
+  copy:
+    src: files/ipmi-exporter.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+
+- name: systemd daemon-reload 
+  systemd:
+    daemon_reload: yes
+    
+- name: enable and started ipmi-exporter.service
+  systemd:
+    name: ipmi-exporter
+    state: restarted
+    enabled: yes
+  register: Result
+
+- name: Showing report  
+  debug:
+    msg: "{{ Result }}"
+
+- name: verify ipmi-exporter is listening on 9290
+  wait_for: port=9290 timeout=3    
